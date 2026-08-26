@@ -10,7 +10,7 @@ const syncUser = inngest.createFunction(
   {
     id: "sync-user",
     triggers: {
-      event: "clerk/user.created",
+      event: "clerk/slack-clone/user.created",
     },
   },
   async ({ event }) => {
