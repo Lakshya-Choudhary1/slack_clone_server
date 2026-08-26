@@ -2,7 +2,7 @@ import http from "http";
 
 import app from "./src/app.js";
 import env from "./src/configs/env.js";
-import connectDB from "./src/databases/db.js";
+import {connectDB} from "./src/databases/db.js";
 
 const server  = http.createServer(app);
 const port = env.PORT;

@@ -3,10 +3,10 @@ import helmet from "helmet";
 import cors from "cors";
 import {clerkMiddleware,getAuth,clerkClient} from "@clerk/express";
 import * as Sentry from "@sentry/node";
-
+import { serve } from "inngest/express";
+import { inngest, functions } from "./inngest/inngest.js";
 import env from "./configs/env.js";
-
-import "./sentry/instrument.js"; // Import the Sentry instrumentation
+import "./sentry/instrument.js"; 
 
 const app = express();
 
@@ -35,6 +35,8 @@ app.use(cors({
 }));
 app.use(clerkMiddleware());
 
+app.use("/api/inngest", serve({ client: inngest, functions }));
+
 app.get("/protected",async (req,res)=>{
      const {isAuthenticated,userId} = getAuth(req);
 
@@ -54,7 +56,7 @@ app.get("/protected",async (req,res)=>{
 
      }catch(error){
           console.error("Error fetching user data:", error);
-          return status(500).json({message:"Internal Server Error"});
+          return res.status(500).json({message:"Internal Server Error"});
      }
 
 })
