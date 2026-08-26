@@ -1,4 +1,5 @@
 import { Inngest } from "inngest";
+import User from "../models/user.model.js";
 
 import {connectDB,disconnectDB} from "../databases/db.js";
 
@@ -9,7 +10,7 @@ const syncUser = inngest.createFunction(
   {
     id: "sync-user",
     triggers: {
-      event: "clerk/slack-clone/user.created",
+      event: "clerk/user.created",
       
     },
   },
@@ -17,6 +18,13 @@ const syncUser = inngest.createFunction(
     await connectDB();
 
     console.log("event:", event.data);
+
+    await User.create({
+          clerkId: event.data.id,
+          email: event.data.email_addresses[0].email_address || "",
+          name: (event.data.first_name || "") +  (event.data.last_name || ""),
+          avatar: event.data.profile_image_url || ""
+    })
 
     await disconnectDB();
 
