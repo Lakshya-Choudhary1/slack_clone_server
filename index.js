@@ -9,13 +9,11 @@ const port = env.PORT;
 
 const startServer = async ()=>{
      try{
-
-          if(env.NODE_ENV === "development"){
-               server.listen(port,()=>{
-                    console.log(`Server is running on port ${port}`)
-               })
-          }
-
+          
+          server.listen(port,()=>{
+               console.log(`Server is running on port ${port}`);
+          })
+          
           await connectDB();
 
      }catch(error){
