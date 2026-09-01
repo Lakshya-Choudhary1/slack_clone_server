@@ -7,27 +7,36 @@ import {connectDB,disconnectDB} from "../databases/db.js";
 export const inngest = new Inngest({ id: "clerk-slack-clone" });
 
 const syncUser = inngest.createFunction(
-  {
-    id: "sync-user",
-    triggers: {
-      event: "clerk/user.created",
-    },
-  },
+  {id:"sync-user"},
+  {event:"clerk/user.created"},
   async ({ event }) => {
-    await connectDB();
 
-    console.log("event:", event.data);
+    const {id, email_addresses, first_name, last_name, image_url} = event.data;
 
-    await User.create({
-          clerkId: event.data.id,
-          email: event.data.email_addresses[0].email_address || "",
-          name: (event.data.first_name || "") +  (event.data.last_name || ""),
-          avatar: event.data.profile_image_url || ""
-    })
+    const newUser = new User({
+      clerkId: id,
+      email: email_addresses[0]?.email_address,
+      name: `${first_name} ${last_name}`,
+      avatar: image_url,
+    });
 
-    await disconnectDB();
+    await newUser.save();
 
-    return { message: "Hello from Inngest!" };
+
+    // TODO : Add error handling and logging
+  }
+);
+
+const deleteUser = inngest.createFunction(
+  {id:"delete-user"},
+  {event:"clerk/user.deleted"},
+  async ({ event }) => {
+    
+    const {id} = event.data;
+
+    await User.findOneAndDelete({clerkId: id});
+    // TODO : Add error handling and logging
+
   }
 );
 
