@@ -14,7 +14,6 @@ const app = express();
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-app.use(express.static("public"));
 app.use(cors({
      origin: (origin, callback) => {
           if (env.NODE_ENV === "production") {
@@ -33,11 +32,13 @@ app.use(cors({
      methods: ["GET", "POST", "PUT", "DELETE"],
      allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use(clerkMiddleware());
 
 
 
-app.use("/api/inngest", serve({ client: inngest, functions }));
+
 
 app.get("/protected",async (req,res)=>{
      const {isAuthenticated,userId} = getAuth(req);
