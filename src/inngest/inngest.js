@@ -7,8 +7,10 @@ import {connectDB,disconnectDB} from "../databases/db.js";
 export const inngest = new Inngest({ id: "clerk-slack-clone" });
 
 const syncUser = inngest.createFunction(
-  {id:"sync-user"},
-  {event:"clerk/user.created"},
+  {
+    id:"sync-user",
+    triggers: ["clerk/user.created"]
+  },
   async ({ event }) => {
 
     const {id, email_addresses, first_name, last_name, image_url} = event.data;
@@ -28,8 +30,10 @@ const syncUser = inngest.createFunction(
 );
 
 const deleteUser = inngest.createFunction(
-  {id:"delete-user"},
-  {event:"clerk/user.deleted"},
+  {
+    id:"delete-user",
+    triggers: ["clerk/user.deleted"]
+  },
   async ({ event }) => {
     
     const {id} = event.data;
