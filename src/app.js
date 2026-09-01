@@ -35,10 +35,7 @@ app.use(cors({
 }));
 app.use(clerkMiddleware());
 
-console.log(
-  "🔥 INNGEST FUNCTIONS:",
-  functions.map((fn) => fn.id)
-);
+
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 
