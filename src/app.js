@@ -2,11 +2,13 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import {clerkMiddleware,getAuth,clerkClient} from "@clerk/express";
-import * as Sentry from "@sentry/node";
 import { serve } from "inngest/express";
-import { inngest, functions } from "./inngest/inngest.js";
+import { inngest, functions } from "./configs/inngest.js";
+import * as Sentry from "@sentry/node";
 import env from "./configs/env.js";
-import "./sentry/instrument.js"; 
+import "./configs/instrument.js"; 
+
+import chatRoutes from "./routers/chat.routes.js";
 
 const app = express();
 
@@ -29,14 +31,12 @@ app.use(cors({
                callback(null, true);
           }
      },
-     methods: ["GET", "POST", "PUT", "DELETE"],
-     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
+app.use("/api/chat", chatRoutes);
+
 app.use(clerkMiddleware());
-
-
 
 
 

@@ -7,7 +7,7 @@ export const inngest = new Inngest({
 });
 
 const syncUser = inngest.createFunction(
-  {
+  { 
     id: "sync-user",
     triggers: [{ event: "clerk/user.created" }]
   },

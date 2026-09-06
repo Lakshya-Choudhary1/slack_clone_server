@@ -1,8 +1,8 @@
-import * as sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import env  from "../configs/env.js";
+import env  from "./env.js";
 
-sentry.init({
+Sentry.init({
   dsn: env.SENTRY_DNS,
   integrations: [
     nodeProfilingIntegration(),
@@ -26,7 +26,7 @@ sentry.init({
 
 // Profiling happens automatically after setting it up with `Sentry.init()`.
 // All spans (unless those discarded by sampling) will have profiling data attached to them.
-sentry.startSpan({
+Sentry.startSpan({
   name: "My Span",
 }, () => {
   // The code executed here will be profiled
