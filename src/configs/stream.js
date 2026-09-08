@@ -1,5 +1,5 @@
 import {StreamChat} from "stream-chat";
-import {env} from "./env.js";
+import env from "./env.js";
 
 const streamClient = StreamChat.getInstance(env.STREAM_API_KEY, env.STREAM_API_SECRET);
 
@@ -31,10 +31,10 @@ export const generateStreamToken = (userId) => {
           const userIdString = userId.toString();
           const token = streamClient.createToken(userIdString);
 
-          return { success: true, message: "Stream token generated successfully", token };
+          return token;
 
      }catch(error){
           console.error("Error generating Stream token:", error);
-          return { success: false, message: "Error generating Stream token", error };
+          return null;
      }
 }

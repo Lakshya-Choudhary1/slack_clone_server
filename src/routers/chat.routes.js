@@ -1,12 +1,9 @@
 import express from "express";
 import { getStreamToken } from "../controllers/chat.controllers.js";
+import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/test", (req, res) => {
-     res.status(200).json({success:true, message: "Chat route is working!" });
-});
-
-router.get("/token",getStreamToken);
+router.get("/token",protectRoute,getStreamToken);
 
 export default  router;

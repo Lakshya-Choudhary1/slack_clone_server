@@ -1,12 +1,14 @@
+import "./configs/instrument.mjs"; 
+
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import {clerkMiddleware,getAuth,clerkClient} from "@clerk/express";
 import { serve } from "inngest/express";
+import cookieParser from "cookie-parser";
 import { inngest, functions } from "./configs/inngest.js";
 import * as Sentry from "@sentry/node";
 import env from "./configs/env.js";
-import "./configs/instrument.js"; 
 
 import chatRoutes from "./routers/chat.routes.js";
 
@@ -19,50 +21,38 @@ app.use(express.urlencoded({extended:true}));
 app.use(cors({
      origin: (origin, callback) => {
           if (env.NODE_ENV === "production") {
-               // Allow requests from the production domain,
-               // Replace "your-production-domain.com" with your actual domain
                if (!origin ||  env.WHITELISTED_DOMAINS.includes(origin)) {
                     callback(null, true);
                } else {
                     callback(new Error("Not allowed by CORS"));
                }
           } else {
-               // Allow requests from localhost during development
                callback(null, true);
           }
      },
+     credentials: true,
 }));
+app.use(cookieParser());
+app.use(clerkMiddleware());
 
 app.use("/api/inngest", serve({ client: inngest, functions }));
 app.use("/api/chat", chatRoutes);
 
-app.use(clerkMiddleware());
+app.get("/protected", (req, res) => {
+
+  const auth = getAuth(req);
+
+  res.json({
+    cookieReceived: !!req.headers.cookie,
+    authorizationReceived: !!req.headers.authorization,
+    cookies: req.cookies,
+    isAuthenticated: auth.isAuthenticated,
+    userId: auth.userId,
+    sessionId: auth.sessionId,
+  });
+});
 
 
-
-app.get("/protected",async (req,res)=>{
-     const {isAuthenticated,userId} = getAuth(req);
-
-     if(!isAuthenticated){
-          return res.status(401).json({message:"Unauthorized"});
-     }
-
-     try{
-
-          const user = await clerkClient.users.getUser(userId);
-
-          if(!user){
-               return res.status(404).json({message:"User not found"});
-          }
-
-          return res.status(200).json({message:"User data fetched successfully",user});
-
-     }catch(error){
-          console.error("Error fetching user data:", error);
-          return res.status(500).json({message:"Internal Server Error"});
-     }
-
-})
 
 app.get("/health", (req, res) => {
      res.status(200).json({ status: "ok" });

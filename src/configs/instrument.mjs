@@ -24,6 +24,8 @@ Sentry.init({
   },
 });
 
+Sentry.logger.info('User triggered test log', { action: 'test_log' })
+
 // Profiling happens automatically after setting it up with `Sentry.init()`.
 // All spans (unless those discarded by sampling) will have profiling data attached to them.
 Sentry.startSpan({
