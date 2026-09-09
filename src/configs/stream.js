@@ -6,7 +6,7 @@ const streamClient = StreamChat.getInstance(env.STREAM_API_KEY, env.STREAM_API_S
 export const upsertStreamUser = async (userData) => {
      try {
 
-          await streamClient.upsertUser(userData);
+          await streamClient.upsertUsers([userData]);
           console.log("User upserted to Stream successfully:", userData.name);
           return { success: true, message: "User upserted to Stream successfully" , user:userData};
      } catch (error) {
@@ -17,7 +17,9 @@ export const upsertStreamUser = async (userData) => {
 
 export const deleteStreamUser = async (userId) => {
      try {
-          await streamClient.deleteUser(userId);
+            await streamClient.deleteUsers({
+               user_ids: [userId]
+          });
           console.log("User deleted from Stream successfully:", userId);
           return { success: true, message: "User deleted from Stream successfully" , userId};
      } catch (error) {
@@ -28,8 +30,7 @@ export const deleteStreamUser = async (userId) => {
 
 export const generateStreamToken = (userId) => {
      try{
-          const userIdString = userId.toString();
-          const token = streamClient.createToken(userIdString);
+          const token = streamClient.generateUserToken(userId);
 
           return token;
 
