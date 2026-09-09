@@ -1,7 +1,7 @@
 import { Inngest } from "inngest";
 import User from "../models/user.model.js";
 import { connectDB } from "../databases/db.js";
-import {upsertStreamUser,deleteStreamUser} from "./stream.js";
+import {upsertStreamUser,deleteStreamUser,addUserToPublicChannel} from "./stream.js";
 
 export const inngest = new Inngest({
   id: "clerk-slack-clone",
@@ -46,6 +46,8 @@ const syncUser = inngest.createFunction(
       email: user.email,
       image: user.avatar,
     });
+
+    await addUserToPublicChannel(id.toString());
 
     console.log("User synced successfully:", res);
 
