@@ -26,7 +26,7 @@ const syncUser = inngest.createFunction(
     const name = `${first_name || ""} ${last_name || ""}`.trim();
     const email = email_addresses?.[0]?.email_address;
 
-    const user = await User.findOneAndUpdate(
+    const user = await User.insertOne(
       { clerkId: id },
       {
         clerkId: id,
