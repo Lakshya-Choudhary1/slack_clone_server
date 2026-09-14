@@ -55,7 +55,7 @@ app.get("/protected", (req, res) => {
 
 
 app.get("/health", (req, res) => {
-     res.status(200).json({ status: "ok" });
+    return res.status(200).json({ status: "ok" , date : new Date().toISOString()});
 });
 
 Sentry.setupExpressErrorHandler(app); // Setup Sentry error handlers

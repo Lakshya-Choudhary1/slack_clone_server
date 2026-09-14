@@ -25,19 +25,13 @@ const syncUser = inngest.createFunction(
     const name = `${first_name || ""} ${last_name || ""}`.trim();
     const email = email_addresses?.[0]?.email_address;
 
-    const user = await User.findOneAndUpdate(
-      { clerkId: id },
-      {
-        clerkId: id,
-        email,
-        name,
-        avatar: image_url,
-      },
-      {
-        new: true,
-        upsert: true,
-      },
-    );
+    const user = await User.insertOne({
+      clerkId: id,
+      email,
+      name,
+      avatar: image_url,
+    });
+
 
     const res = await upsertStreamUser({
       id,
