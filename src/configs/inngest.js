@@ -25,13 +25,23 @@ const syncUser = inngest.createFunction(
     const name = `${first_name || ""} ${last_name || ""}`.trim();
     const email = email_addresses?.[0]?.email_address;
 
+    const existingUser = await User.findOne({ clerkId: id });
+
+    if (existingUser) {
+      console.log("User already exists with Clerk ID:", id);
+      return {
+        success: false,
+        message: "User already exists",
+        userId: existingUser._id,
+      };
+    }
+
     const user = await User.insertOne({
       clerkId: id,
       email,
       name,
       avatar: image_url,
     });
-
 
     const res = await upsertStreamUser({
       id,
@@ -46,7 +56,7 @@ const syncUser = inngest.createFunction(
 
     return {
       success: true,
-      user: user._id,
+      userId: user._id,
     };
   },
 );

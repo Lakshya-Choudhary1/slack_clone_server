@@ -1,12 +1,10 @@
 import * as Sentry from "@sentry/node";
 import { nodeProfilingIntegration } from "@sentry/profiling-node";
-import env  from "./env.js";
+import env from "./env.js";
 
 Sentry.init({
   dsn: env.SENTRY_DNS,
-  integrations: [
-    nodeProfilingIntegration(),
-  ],
+  integrations: [nodeProfilingIntegration()],
 
   // Send structured logs to Sentry
   enableLogs: true,
@@ -15,7 +13,7 @@ Sentry.init({
   // Set sampling rate for profiling - this is evaluated only once per SDK.init call
   profileSessionSampleRate: 1.0,
   // Trace lifecycle automatically enables profiling during active traces
-  profileLifecycle: 'trace',
+  profileLifecycle: "trace",
   dataCollection: {
     // To disable sending user data and HTTP bodies, uncomment the lines below. For more info visit:
     // https://docs.sentry.io/platforms/javascript/guides/node/configuration/options/#dataCollection
@@ -24,12 +22,15 @@ Sentry.init({
   },
 });
 
-Sentry.logger.info('User triggered test log', { action: 'test_log' })
+Sentry.logger.info("User triggered test log", { action: "test_log" });
 
 // Profiling happens automatically after setting it up with `Sentry.init()`.
 // All spans (unless those discarded by sampling) will have profiling data attached to them.
-Sentry.startSpan({
-  name: "My Span",
-}, () => {
-  // The code executed here will be profiled
-});
+Sentry.startSpan(
+  {
+    name: "My Span",
+  },
+  () => {
+    // The code executed here will be profiled
+  },
+);
