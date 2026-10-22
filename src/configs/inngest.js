@@ -80,7 +80,14 @@ const deleteUser = inngest.createFunction(
       clerkId: id,
     });
 
-    await deleteStreamUser(id);
+    const res = await deleteStreamUser(id);
+    console.log("User deleted successfully:", res);
+
+    return {
+      success: true,
+      message: "User deleted successfully",
+      userId: id,
+    };
   },
 );
 
