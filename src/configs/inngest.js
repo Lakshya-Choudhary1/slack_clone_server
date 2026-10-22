@@ -50,12 +50,15 @@ const syncUser = inngest.createFunction(
       image: event.data.image_url,
     });
 
+    const {token} = res;
+
     await addUserToPublicChannel(id);
 
     console.log("User synced successfully:", res);
 
     return {
       success: true,
+      streamToken: token,
       userId: user._id,
     };
   },

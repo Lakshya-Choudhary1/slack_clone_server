@@ -8,10 +8,12 @@ const streamClient = StreamChat.getInstance(
 
 export const upsertStreamUser = async (userData) => {
   try {
+    console.log("Upserting user to Stream:", userData.name);
     await streamClient.upsertUsers([userData]);
-    console.log("User upserted to Stream successfully:", userData.name);
+    const token = streamClient.createToken(userData.id.toString());
     return {
       success: true,
+      token,
       message: "User upserted to Stream successfully",
       user: userData,
     };
