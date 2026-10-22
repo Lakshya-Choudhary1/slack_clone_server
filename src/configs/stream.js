@@ -25,6 +25,7 @@ export const upsertStreamUser = async (userData) => {
 
 export const deleteStreamUser = async (userId) => {
   try {
+    console.log("Deleting user from Stream:", userId);
     await streamClient.deleteUsers({
       user_ids: [userId],
     });
